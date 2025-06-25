@@ -85,7 +85,16 @@ export default {
         icon: 'more'
       },
       children: LabelRoutes
+    },
+    {
+      path: '/console/iframe',
+      component: () => import('@/views/iframe/IframePage'),
+      name: 'IframePage',
+      meta: {
+        title: i18n.t('route.Iframe'),
+        icon: 'assets',
+        permissions: [] // Add empty permissions array
+      }
     }
   ]
 }
-

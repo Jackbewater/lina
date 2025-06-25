@@ -1279,6 +1279,7 @@
   },
   "route": {
     "": "",
+    "Iframe": "Iframe 嵌入式",
     "More": "更多选项",
     "VirtualAccountDetail": "虚拟账号详情",
     "VirtualAccountUpdate": "虚拟账号更新",

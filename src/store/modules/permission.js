@@ -146,7 +146,13 @@ export function filterPermedRoutes(routes, parent) {
     }
     tmp = cleanRoute(tmp, parent)
 
-    if (hasPermission(tmp.meta.permissions)) {
+    // Allow routes with empty permissions array
+    if (tmp.meta.permissions && tmp.meta.permissions.length === 0) {
+      if (tmp.children) {
+        tmp.children = filterPermedRoutes(tmp.children, tmp)
+      }
+      res.push(tmp)
+    } else if (hasPermission(tmp.meta.permissions)) {
       if (tmp.children) {
         tmp.children = filterPermedRoutes(tmp.children, tmp)
       }
