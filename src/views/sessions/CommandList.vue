@@ -50,7 +50,7 @@ export default {
         },
         columns: [
           'expandCol', 'input', 'risk_level', 'user', 'remote_addr',
-          'asset', 'system_user', 'session', 'timestamp'
+          'asset', 'system_user', 'session', 'face_precheck_success', 'timestamp'
         ],
         extraQuery: {
           date_to: dateTo,
@@ -101,6 +101,13 @@ export default {
                   params: { id: cellValue }
                 }
               }
+            }
+          },
+          face_precheck_success: {
+            label: this.$t('sessions.faceRecognition'),
+            width: '130px',
+            formatter: (row) => {
+              return vm.formatFacePrecheckResult(row)
             }
           },
           timestamp: {
@@ -232,6 +239,43 @@ export default {
         }, {})
       query = deepmerge(this.query, query)
       return query
+    },
+    formatFacePrecheckResult(row) {
+      const status = row.face_precheck_status
+      const success = row.face_precheck_success
+      const failureCount = row.face_precheck_failure_count
+      const display = row.face_precheck_status_display
+      if (!status && success !== true && success !== false) {
+        return ''
+      }
+      const statusConfig = {
+        success: {
+          type: 'success',
+          label: display || this.$t('common.Success')
+        },
+        failed: {
+          type: 'danger',
+          label: failureCount > 0
+            ? `${this.$t('common.Failed')} ${failureCount}${this.$t('sessions.times')}`
+            : (display || this.$t('common.Failed'))
+        },
+        none: {
+          type: 'info',
+          label: display || this.$t('sessions.notRecorded')
+        }
+      }
+
+      if (statusConfig[status]) {
+        const config = statusConfig[status]
+        return <el-tag type={config.type} size='mini'>{config.label}</el-tag>
+      }
+      if (success === true) {
+        return <el-tag type='success' size='mini'>{display || this.$t('common.Success')}</el-tag>
+      }
+      if (success === false) {
+        return <el-tag type='danger' size='mini'>{failureCount > 0 ? `${this.$t('common.Failed')} ${failureCount}${this.$t('sessions.times')}` : (display || this.$t('common.Failed'))}</el-tag>
+      }
+      return <el-tag type='info' size='mini'>{display || this.$t('sessions.notRecorded')}</el-tag>
     }
   }
 }
